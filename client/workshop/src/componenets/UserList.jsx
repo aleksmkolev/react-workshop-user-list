@@ -1,15 +1,20 @@
 import Search from './Search'
 import Pagination from './Pagination'
 import UserListItem from './UserListItem'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import userService from '../services/userService'
 
-export default function UserList() {        
+
+export default function UserList() {     
+    const [users, setUsers] = useState([])   
 
     useEffect(() => {
         userService.getAll()
         .then(result =>{
-            console.log(result)
+            setUsers(result)
+        })
+        .catch(error => {
+            console.error(error)
         })
     }, [])
 
@@ -130,7 +135,9 @@ export default function UserList() {
           </thead>
           <tbody>
             {/* Table row component */}
-            <UserListItem />
+            {users.map(user => <UserListItem key={user._id} 
+            user={user}
+            />)}
           </tbody>
         </table>
       </div>
