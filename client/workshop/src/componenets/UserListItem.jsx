@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-
+import { fromIsoDate } from '../utils/datetimeUtils'
 export default function UserListItem({user}) {
   console.log(user);
   
@@ -13,7 +13,7 @@ export default function UserListItem({user}) {
               <td>{user.lastName}</td>
               <td>{user.email}</td>
               <td>{user.phoneNumber}</td>
-              <td>{user.createdAt}</td>
+              <td>{fromIsoDate(user.createdAt)}</td>
               <td>{user._id}</td>
 
               <td className="actions">
