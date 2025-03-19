@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-export default function UserCreate({ onClose }) {
+export default function UserCreate({ onClose, onSave }) {
     
   return (
     <div className="overlay">
@@ -95,7 +95,7 @@ export default function UserCreate({ onClose }) {
               </div>
             </div>
             <div id="form-actions">
-              <button id="action-save" className="btn" type="submit">Save</button>
+              <button id="action-save" className="btn" type="submit" onClick={onSave}>Save</button>
               <button id="action-cancel" className="btn" type="button" onClick={onClose}>
                 Cancel
               </button>
@@ -108,5 +108,6 @@ export default function UserCreate({ onClose }) {
 }
 
 UserCreate.propTypes = {
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired
 }

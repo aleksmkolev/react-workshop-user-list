@@ -27,11 +27,19 @@ export default function UserList() {
       setIsCreateUserModalOpen(false)
     }
 
+    const saveCreateUserClickHandler = (e) =>{
+      e.preventDefault()
+      console.log('save user');
+      
+
+    }
+
   return (
     <section className="card users-container">
       {/* Search bar component */}
       <Search />
-      {isCreateUserModalOpen && <UserCreate onClose={closeCreateUserClickHandler} />}
+      {isCreateUserModalOpen && <UserCreate onClose={closeCreateUserClickHandler} onSave={saveCreateUserClickHandler} />}
+
 
       {/* Table component */}
       <div className="table-wrapper">
