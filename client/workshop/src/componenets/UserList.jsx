@@ -23,11 +23,15 @@ export default function UserList() {
       setIsCreateUserModalOpen(true)
     }
 
+    const closeCreateUserClickHandler = () =>{
+      setIsCreateUserModalOpen(false)
+    }
+
   return (
     <section className="card users-container">
       {/* Search bar component */}
       <Search />
-      {isCreateUserModalOpen && <UserCreate />}
+      {isCreateUserModalOpen && <UserCreate onClose={closeCreateUserClickHandler} />}
 
       {/* Table component */}
       <div className="table-wrapper">
