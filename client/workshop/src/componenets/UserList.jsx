@@ -10,6 +10,7 @@ export default function UserList() {
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
 
     useEffect(() => {
+
         userService.getAll()
         .then(result =>{
             setUsers(result)
@@ -19,20 +20,59 @@ export default function UserList() {
         })
     }, [])
 
+    /**
+     * Handles opening the create user modal
+     * Sets isCreateUserModalOpen state to true to display the modal
+     */
     const addUserClickHandler = () => {
       setIsCreateUserModalOpen(true)
     }
 
+    /**
+     * Handles closing the create user modal
+     * Sets isCreateUserModalOpen state to false to hide the modal
+     */
     const closeCreateUserClickHandler = () =>{
       setIsCreateUserModalOpen(false)
     }
 
-    const saveCreateUserClickHandler = (e) =>{
-      e.preventDefault()
-      console.log('save user');
+    /**
+     * Handles the form submission for creating a new user
+     * @param {Event} e - The form submission event
+     * @returns {Promise<void>}
+     */
+    const saveCreateUserClickHandler = async (e) => {
+      e.preventDefault(); // Prevent default form submission behavior
       
+      // Verify we have a valid form element
+      if (!(e.target instanceof HTMLFormElement)) {
+        console.error('Event target is not a form element');
+        return;
+      }
+      
+      // Create FormData object from form and convert to plain object
+      const formData = new FormData(e.target);
+      const userData = Object.fromEntries(formData);
 
+      // Send create request to server and get new user data
+      const newUser = await userService.create(userData);
+
+      // Update local state with new user
+      setUsers(state => [...state, newUser]);
+      
+      // Close the modal after successful creation
+      setIsCreateUserModalOpen(false);
     }
+
+    
+
+    
+
+    // update local state
+
+
+    // close modal
+
 
   return (
     <section className="card users-container">
