@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 
-export default function UserCreate({ onClose, onSave }) {
+export default function UserCreate({ userId, onClose, onSave, onEdit }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         
-        // Extract address fields
+        // Extract address fields and create address object
         const addressData = {
             country: formData.get('country'),
             city: formData.get('city'),
@@ -13,20 +13,22 @@ export default function UserCreate({ onClose, onSave }) {
             streetNumber: formData.get('streetNumber')
         };
 
-        // Create formatted address string
-        const address = `${addressData.street} ${addressData.streetNumber}, ${addressData.city}, ${addressData.country}`;
-
-        // Create user data object with formatted address
+        // Create user data object with address object (not string)
         const userData = {
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             email: formData.get('email'),
             phoneNumber: formData.get('phoneNumber'),
             imageUrl: formData.get('imageUrl'),
-            address: address // Use formatted address string
+            address: addressData // Keep as object for flexibility
         };
 
-        onSave(userData);
+        // Call appropriate handler
+        if (userId) {
+            onEdit(userData);
+        } else {
+            onSave(userData);
+        }
     };
     
     return (
@@ -35,7 +37,7 @@ export default function UserCreate({ onClose, onSave }) {
             <div className="modal">
                 <div className="user-container">
                     <header className="headers">
-                        <h2>Add User</h2>
+                        <h2>{userId ? 'Edit User' : 'Add User'}</h2>
                         <button className="btn close" onClick={onClose}>
                             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
                                 className="svg-inline--fa fa-xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
@@ -122,7 +124,11 @@ export default function UserCreate({ onClose, onSave }) {
                             </div>
                         </div>
                         <div id="form-actions">
-                            <button id="action-save" className="btn" type="submit">Save</button>
+                          {userId?
+                            <button id="action-save" className="btn" type="submit" onClick={onEdit}>Edit</button>
+                          :
+                            <button id="action-save" className="btn" type="submit" onClick={onSave}>Save</button>
+                        }
                             <button id="action-cancel" className="btn" type="button" onClick={onClose}>
                                 Cancel
                             </button>
@@ -135,6 +141,8 @@ export default function UserCreate({ onClose, onSave }) {
 }
 
 UserCreate.propTypes = {
+    userId: PropTypes.string,
     onClose: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired
+    onSave: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired
 }

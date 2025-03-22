@@ -23,6 +23,15 @@ export default function UserInfo({
             })
     }, [userId])
 
+    // Format address for display
+    const formatAddress = (address) => {
+        if (!address) return 'N/A';
+        if (typeof address === 'string') return address;
+        
+        const { country, city, street, streetNumber } = address;
+        return `${street} ${streetNumber}, ${city}, ${country}`;
+    };
+
     return (
         <div className="overlay">
             <div className="backdrop" onClick={onClose}></div>
@@ -65,7 +74,7 @@ export default function UserInfo({
                                     <p>Phone Number: <strong>{user.phoneNumber}</strong></p>
                                     <p>
                                         Address:
-                                        <strong> {user.address?.country}, {user.address?.city}, {user.address?.street}, {user.address?.streetNumber} </strong>
+                                        <strong> {formatAddress(user.address)} </strong>
                                     </p>
                                     <p>Created on: <strong>{user.createdAt}</strong></p>
                                     <p>Modified on: <strong>{user.updatedAt}</strong></p>

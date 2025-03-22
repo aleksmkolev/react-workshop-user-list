@@ -12,6 +12,7 @@ export default function UserList() {
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
     const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(null)
     const [isUserDeleteModalOpen, setIsUserDeleteModalOpen] = useState(null)
+    const [userIdEdit, setUserIdEdit] = useState(null)
 
     useEffect(() => {
 
@@ -38,6 +39,7 @@ export default function UserList() {
      */
     const closeCreateUserClickHandler = () =>{
       setIsCreateUserModalOpen(false)
+      setUserIdEdit(null)
     }
 
     /**
@@ -81,6 +83,26 @@ export default function UserList() {
       setIsUserDeleteModalOpen(null)
     }
 
+    const userEditClickHandler = (userId) => {
+      setUserIdEdit(userId)
+    }
+
+    const saveEditUserClickHandler = async (e) => {
+      const userId = userIdEdit
+      e.preventDefault()
+
+      const formData = new FormData(e.target)
+      const userData = Object.fromEntries(formData)
+
+      const updatedUser =await userService.update(userId, userData)
+      setUsers(state => state.map(user => user._id === userIdEdit ? updatedUser : user))
+      
+      setUserIdEdit(null)
+
+    }
+
+   
+
     
 
     // update local state
@@ -109,6 +131,14 @@ export default function UserList() {
       onClose={closeUserDeleteClickHandler}
       onDelete={userDeleteHandler}
       />}
+
+      {userIdEdit && (
+        <UserCreate 
+        userId = {userIdEdit}
+        onClose={closeCreateUserClickHandler} 
+        onEdit={saveEditUserClickHandler}
+        />  
+      )}
 
 
       {/* Table component */}
@@ -177,7 +207,7 @@ export default function UserList() {
             user={user}
             onUserInfoClick={UserInfoClickHandler}
             onUserDeleteClick={UserDeleteClickHandler}
-
+            onUserEditClick={userEditClickHandler}
             />)}
           </tbody>
         </table>

@@ -8,7 +8,7 @@ import { fromIsoDate } from '../utils/datetimeUtils'
  * @param {Function} props.onUserInfoClick - Handler for info button click
  * @param {Function} props.onUserDeleteClick - Handler for delete button click
  */
-export default function UserListItem({user, onUserInfoClick, onUserDeleteClick}) {
+export default function UserListItem({user, onUserInfoClick, onUserDeleteClick, onUserEditClick}) {
     // Default avatar image URL - replace with your actual default image path
     const defaultAvatarUrl = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
     
@@ -34,7 +34,7 @@ export default function UserListItem({user, onUserInfoClick, onUserDeleteClick})
               <td>{user._id}</td>
 
               <td className="actions">
-                <button className="btn edit-btn" title="Edit">
+                <button className="btn edit-btn" title="Edit" onClick={() => onUserEditClick(user._id)}>
                   <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square"
                     className="svg-inline--fa fa-pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 532 512">
@@ -77,5 +77,6 @@ UserListItem.propTypes = {
         updatedAt: PropTypes.string
     }).isRequired,
     onUserInfoClick: PropTypes.func.isRequired,
-    onUserDeleteClick: PropTypes.func.isRequired
+    onUserDeleteClick: PropTypes.func.isRequired,
+    onUserEditClick: PropTypes.func.isRequired
 }

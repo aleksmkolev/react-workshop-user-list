@@ -14,16 +14,7 @@ export default {
     },
     async create(userData){
         // Format the data before sending to server
-        const postData = {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            phoneNumber: userData.phoneNumber,
-            imageUrl: userData.imageUrl,
-            address: userData.address,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        }
+        const postData = transformUserData(userData)
         const response = await fetch(baseUrl, {
             method: 'POST', 
             headers: {
@@ -40,6 +31,34 @@ export default {
         })
         const result = await response.json()
         return result
+    },
+    async update(userId, userData){
+        const postData = transformUserData(userData)
+
+        const response = await fetch(`${baseUrl}/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify(postData)
+        })
+        const result = await response.json()
+        return result
     }
+
+}
+
+function transformUserData(userData){
+    const postData = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        imageUrl: userData.imageUrl,
+        address: userData.address,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    }
+    return postData
 }
      
