@@ -4,10 +4,12 @@ import UserListItem from './UserListItem'
 import { useEffect, useState } from 'react'
 import userService from '../services/userService'
 import UserCreate from './UserCreate'
+import UserInfo from './UserInfo'
 
 export default function UserList() {     
     const [users, setUsers] = useState([])   
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
+    const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState()
 
     useEffect(() => {
 
@@ -28,7 +30,7 @@ export default function UserList() {
       setIsCreateUserModalOpen(true)
     }
 
-    /**
+    /** 
      * Handles closing the create user modal
      * Sets isCreateUserModalOpen state to false to hide the modal
      */
@@ -64,7 +66,9 @@ export default function UserList() {
       setIsCreateUserModalOpen(false);
     }
 
-    
+    const UserInfoClickHandler = (userId) => {
+      setIsUserInfoModalOpen(userId)
+    }
 
     
 
@@ -78,9 +82,17 @@ export default function UserList() {
     <section className="card users-container">
       {/* Search bar component */}
       <Search />
-      {isCreateUserModalOpen && <UserCreate onClose={closeCreateUserClickHandler} onSave={saveCreateUserClickHandler} />}
+
+      {isCreateUserModalOpen && <UserCreate 
+      onClose={closeCreateUserClickHandler} 
+      onSave={saveCreateUserClickHandler} 
+      />}
+
+      {isUserInfoModalOpen && (<UserInfo 
+      userId={isUserInfoModalOpen}
 
 
+      />)}
       {/* Table component */}
       <div className="table-wrapper">
         {/* Overlap components  */}
@@ -193,8 +205,10 @@ export default function UserList() {
           </thead>
           <tbody>
             {/* Table row component */}
-            {users.map(user => <UserListItem key={user._id} 
+            {users.map(user => <UserListItem 
+            key={user._id} 
             user={user}
+            onUserInfoClick={UserInfoClickHandler}
             />)}
           </tbody>
         </table>
