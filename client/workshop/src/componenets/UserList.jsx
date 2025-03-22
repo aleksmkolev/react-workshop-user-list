@@ -9,7 +9,7 @@ import UserInfo from './UserInfo'
 export default function UserList() {     
     const [users, setUsers] = useState([])   
     const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
-    const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState()
+    const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(null)
 
     useEffect(() => {
 
@@ -40,34 +40,30 @@ export default function UserList() {
 
     /**
      * Handles the form submission for creating a new user
-     * @param {Event} e - The form submission event
+     * @param {Object} userData - The processed user data
      * @returns {Promise<void>}
      */
-    const saveCreateUserClickHandler = async (e) => {
-      e.preventDefault(); // Prevent default form submission behavior
-      
-      // Verify we have a valid form element
-      if (!(e.target instanceof HTMLFormElement)) {
-        console.error('Event target is not a form element');
-        return;
-      }
-      
-      // Create FormData object from form and convert to plain object
-      const formData = new FormData(e.target);
-      const userData = Object.fromEntries(formData);
+    const saveCreateUserClickHandler = async (userData) => {
+        try {
+            // Send create request to server and get new user data
+            const newUser = await userService.create(userData);
 
-      // Send create request to server and get new user data
-      const newUser = await userService.create(userData);
-
-      // Update local state with new user
-      setUsers(state => [...state, newUser]);
-      
-      // Close the modal after successful creation
-      setIsCreateUserModalOpen(false);
-    }
+            // Update local state with new user
+            setUsers(state => [...state, newUser]);
+            
+            // Close the modal after successful creation
+            setIsCreateUserModalOpen(false);
+        } catch (error) {
+            console.error('Failed to create user:', error);
+        }
+    };
 
     const UserInfoClickHandler = (userId) => {
       setIsUserInfoModalOpen(userId)
+    }
+
+    const closeUserInfoClickHandler = () => {
+      setIsUserInfoModalOpen(null)
     }
 
     
@@ -90,6 +86,7 @@ export default function UserList() {
 
       {isUserInfoModalOpen && (<UserInfo 
       userId={isUserInfoModalOpen}
+      onClose={closeUserInfoClickHandler}
 
 
       />)}
@@ -209,6 +206,7 @@ export default function UserList() {
             key={user._id} 
             user={user}
             onUserInfoClick={UserInfoClickHandler}
+
             />)}
           </tbody>
         </table>

@@ -4,25 +4,33 @@ import PropTypes from 'prop-types'
 
 export default function UserInfo({
     userId,
+    onClose,
 }){
-    const [user, setUser] = useState({})
-    useEffect(() =>{
+    const [user, setUser] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        setIsLoading(true)
         userService.getOne(userId)
-        .then(result => {
-            setUser(result)
-        })
+            .then(result => {
+                setUser(result)
+            })
+            .catch(error => {
+                console.error('Failed to fetch user:', error)
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
     }, [userId])
 
-    
-    
     return (
         <div className="overlay">
-            <div className="backdrop"></div>
+            <div className="backdrop" onClick={onClose}></div>
             <div className="modal">
                 <div className="detail-container">
                     <header className="headers">
                         <h2>User Detail</h2>
-                        <button className="btn close">
+                        <button className="btn close" onClick={onClose}>
                             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
                                 className="svg-inline--fa fa-xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                                 <path fill="currentColor"
@@ -32,26 +40,40 @@ export default function UserInfo({
                         </button>
                     </header>
                     <div className="content">
-                        <div className="image-container">
-                            <img src={user.imageUrl} alt=""
-                                className="image" />
-                        </div>
-                        <div className="user-details">
-                            <p>User Id: <strong>{user._id}</strong></p>
-                            <p>
-                                Full Name:
-                                <strong> {user.firstName} {user.lastName} </strong>
-                            </p>
-                            <p>Email: <strong>{user.email}</strong></p>
-                            <p>Phone Number: <strong>{user.phoneNumber}</strong></p>
-                            <p>
-                                Address:
-                                <strong> {user.address} </strong>
-                            </p>
-
-                            <p>Created on: <strong>{user.createdAt}</strong></p>
-                            <p>Modified on: <strong>{user.updatedAt}</strong></p>
-                        </div>
+                        {isLoading ? (
+                            <div>Loading...</div>
+                        ) : user ? (
+                            <>
+                                <div className="image-container">
+                                    <img 
+                                        src={user.imageUrl || defaultAvatarUrl} 
+                                        alt={`${user.firstName}'s profile`}
+                                        className="image"
+                                        onError={(e) => {
+                                            e.target.src = defaultAvatarUrl;
+                                            e.target.onerror = null;
+                                        }}
+                                    />
+                                </div>
+                                <div className="user-details">
+                                    <p>User Id: <strong>{user._id}</strong></p>
+                                    <p>
+                                        Full Name:
+                                        <strong> {user.firstName} {user.lastName} </strong>
+                                    </p>
+                                    <p>Email: <strong>{user.email}</strong></p>
+                                    <p>Phone Number: <strong>{user.phoneNumber}</strong></p>
+                                    <p>
+                                        Address:
+                                        <strong> {user.address || 'N/A'} </strong>
+                                    </p>
+                                    <p>Created on: <strong>{user.createdAt}</strong></p>
+                                    <p>Modified on: <strong>{user.updatedAt}</strong></p>
+                                </div>
+                            </>
+                        ) : (
+                            <div>User not found</div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -59,6 +81,10 @@ export default function UserInfo({
     )
 }
 
+// Add default avatar URL constant
+const defaultAvatarUrl = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+
 UserInfo.propTypes = {
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired
 }

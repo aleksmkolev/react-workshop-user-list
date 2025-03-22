@@ -1,13 +1,28 @@
 import PropTypes from 'prop-types'
 import { fromIsoDate } from '../utils/datetimeUtils'
+
+/**
+ * UserListItem Component - Renders a single user row in the users table
+ * @param {Object} props
+ * @param {Object} props.user - User data object
+ * @param {Function} props.onUserInfoClick - Handler for info button click
+ */
 export default function UserListItem({user, onUserInfoClick}) {
-  
-  
+    // Default avatar image URL - replace with your actual default image path
+    const defaultAvatarUrl = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+    
     return (
         <tr>
               <td>
-                <img src={user.imageUrl}
-                  alt={`${user.firstName}'s profile`} className="image" />
+                <img 
+                    src={user.imageUrl || defaultAvatarUrl}
+                    alt={`${user.firstName}'s profile`} 
+                    className="image"
+                    onError={(e) => {
+                        e.target.src = defaultAvatarUrl;
+                        e.target.onerror = null; // Prevent infinite loop if default image fails
+                    }}
+                />
               </td>
               <td>{user.firstName}</td>
               <td>{user.lastName}</td>
