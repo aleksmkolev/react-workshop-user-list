@@ -34,11 +34,14 @@ export default {
     },
     async update(userId, userData){
         const postData = transformUserData(userData)
+        postData._id = userId
 
         const response = await fetch(`${baseUrl}/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
+
+                
             },  
             body: JSON.stringify(postData)
         })

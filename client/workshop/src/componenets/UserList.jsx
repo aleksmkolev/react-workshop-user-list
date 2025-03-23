@@ -91,7 +91,7 @@ export default function UserList() {
       const userId = userIdEdit
       e.preventDefault()
 
-      const formData = new FormData(e.target)
+      const formData = new FormData(e.target.parentElement.parentElement);
       const userData = Object.fromEntries(formData)
 
       const updatedUser =await userService.update(userId, userData)
